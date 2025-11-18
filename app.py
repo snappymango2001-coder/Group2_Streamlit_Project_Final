@@ -51,14 +51,24 @@ add_custom_css()
 # ---------------------------------------------------------
 @st.cache_data
 def load_data():
+    # normal CSVs
     orders = pd.read_csv("data/orders.csv")
     order_items = pd.read_csv("data/order_items.csv")
     products = pd.read_csv("data/products.csv")
-    website_sessions = pd.read_csv("data/website_sessions_clean.csv")
-    pageviews = pd.read_csv("data/website_pageviews.csv")
-    return orders, order_items, products, website_sessions, pageviews
 
-orders, order_items, products, website_sessions, pageviews = load_data()
+    # unzip + read website_sessions_clean
+    import zipfile
+    with zipfile.ZipFile("data/website_sessions_clean.zip", "r") as z:
+        # adjust name if different inside zip
+        sessions_filename = z.namelist()[0]     # first file inside zip
+        website_sessions = pd.read_csv(z.open(sessions_filename))
+
+    # unzip + read website_pageviews
+    with zipfile.ZipFile("data/website_pageviews.zip", "r") as z:
+        pageviews_filename = z.namelist()[0]    # first file inside zip
+        pageviews = pd.read_csv(z.open(pageviews_filename))
+
+    return orders, order_items, products, website_sessions, pageviews
 
 # ---------------------------------------------------------
 # Date Columns Prep
@@ -729,6 +739,7 @@ elif tab == "💻 Website Analytics":
     fig_device.update_layout(height=400)
 
     st.plotly_chart(fig_device, use_container_width=True)
+
 
 
 
