@@ -138,7 +138,7 @@ if tab == "🏠 Home":
     and website analytics using the navigation tabs above.
     """)
 
-    st.image("data/onlypic.png", use_container_width=True)
+    st.image("data/Onlypic.png", use_container_width=True)
 
     st.markdown("---")
     st.write("### 👈 Use the sidebar filters to explore the data.")
@@ -240,3 +240,4 @@ elif tab == "💻 Website Analytics":
     col1, col2 = st.columns(2)
     col1.metric("Total Sessions", total_sessions)
     col2.metric("Total Pageviews", total_pageviews)
+
