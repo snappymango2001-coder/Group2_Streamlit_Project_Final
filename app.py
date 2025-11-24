@@ -47,35 +47,29 @@ authenticator = stauth.Authenticate(
 )
 
 # ---------------------------------------------------------
-# 🔵 INSERT LOGIN PAGE UI **RIGHT HERE**
-# ---------------------------------------------------------
-
-st.markdown("""
-<h2 style='text-align:center; color:#333;'>Welcome Back 👋</h2>
-
-<p style='text-align:center; color:#555; font-size:16px;'>
-    Use your company credentials to sign in  
-    and unlock your personalized analytics experience.
-</p>
-""", unsafe_allow_html=True)
-
-st.success("👋 Hi there! So good to see you again!")
-
-# ---------------------------------------------------------
 # LOGIN FORM
 # ---------------------------------------------------------
 
 name, auth_status, username = authenticator.login("Login", "main")
 
 # ---------------------------------------------------------
-# LOGIN RESPONSES
+# LOGIN PAGE UI (SHOWN ONLY BEFORE LOGIN)
 # ---------------------------------------------------------
 
-if auth_status is False:
-    st.error("❌ Incorrect username or password")
+if auth_status is None:
+    st.markdown("""
+    <h2 style='text-align:center; color:#333;'>Welcome Back 👋</h2>
 
-elif auth_status is None:
+    <p style='text-align:center; color:#555; font-size:16px;'>
+        Use your company credentials to sign in  
+        and unlock your personalized analytics experience.
+    </p>
+    """, unsafe_allow_html=True)
+
     st.warning("Please enter your username and password")
+
+elif auth_status is False:
+    st.error("❌ Incorrect username or password")
 
 elif auth_status:
     authenticator.logout("Logout", "sidebar")
@@ -87,6 +81,7 @@ elif auth_status:
     # -----------------------------------------
     # EVERYTHING BELOW THIS POINT IS THE APP
     # -----------------------------------------
+
 
 
     st.set_page_config(
@@ -812,6 +807,7 @@ elif auth_status:
     
         st.plotly_chart(fig_device, use_container_width=True)
     
+
 
 
 
