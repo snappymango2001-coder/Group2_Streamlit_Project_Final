@@ -140,7 +140,7 @@ if tab == "🏠 Home":
     
 
     # Display an image (local file)
-    st.image("data/onlypic.png", use_container_width=True)
+    st.image("data/Onlypic.png", use_container_width=True)
 
     st.markdown("---")
     st.write("### 👈 Use the sidebar filters and top menu to start exploring the data :) ")
@@ -729,4 +729,5 @@ elif tab == "💻 Website Analytics":
     fig_device.update_layout(height=400)
 
     st.plotly_chart(fig_device, use_container_width=True)
+
 
