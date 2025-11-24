@@ -2,30 +2,53 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-from streamlit_authenticator.authenticate import Authenticate
-from streamlit_authenticator.utilities.hasher import Hasher
+import yaml
+from streamlit_authenticator import Authenticate
+from streamlit_authenticator.utilities import Hasher
 
 # ---------------------------------------------------------
-# AUTHENTICATION 
+# AUTHENTICATION (New API)
 # ---------------------------------------------------------
 
-names = ["Tom Parmesan", "Morgan Rockwell", "Cindy Sharp"]
-usernames = ["tom", "morgan", "cindy"]
-
-# Replace these placeholder passwords
 passwords = ["TomPass123", "MorganPass123", "CindyPass123"]
 hashed_passwords = Hasher(passwords).generate()
 
+config = {
+    "credentials": {
+        "usernames": {
+            "tom": {
+                "name": "Tom Parmesan",
+                "password": hashed_passwords[0]
+            },
+            "morgan": {
+                "name": "Morgan Rockwell",
+                "password": hashed_passwords[1]
+            },
+            "cindy": {
+                "name": "Cindy Sharp",
+                "password": hashed_passwords[2]
+            },
+        }
+    },
+    "cookie": {
+        "name": "toyapp_cookie",
+        "key": "toyapp_signature_key",
+        "expiry_days": 7
+    },
+    "preauthorized": {
+        "emails": []
+    }
+}
+
 authenticator = Authenticate(
-    names,
-    usernames,
-    hashed_passwords,
-    "toyapp_cookie",
-    "toyapp_signature_key",
-    cookie_expiry_days=7
+    config["credentials"],
+    config["cookie"]["name"],
+    config["cookie"]["key"],
+    config["cookie"]["expiry_days"]
 )
 
 name, auth_status, username = authenticator.login("Login", "main")
+
 
 if auth_status is False:
     st.error("❌ Incorrect username or password")
@@ -47,10 +70,6 @@ elif auth_status:
         page_icon="🧸",
         layout="wide"
     )
-
-    # ... your entire dashboard code continues ...
-
-
     # ---------------------------------------------------------
     # Color Theme & Background
     # ---------------------------------------------------------
@@ -769,6 +788,7 @@ elif auth_status:
     
         st.plotly_chart(fig_device, use_container_width=True)
     
+
 
 
 
