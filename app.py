@@ -2,8 +2,6 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-import zipfile
-import os
 
 # ---------------------------------------------------------
 # Streamlit Page Config
@@ -14,9 +12,9 @@ st.set_page_config(
     layout="wide"
 )
 
-#--------------------------------------------------------------
-#Color Theme & Background
-#--------------------------------------------------------------
+# ---------------------------------------------------------
+# Color Theme & Background
+# ---------------------------------------------------------
 def add_custom_css():
     css = """
     <style>
@@ -46,28 +44,23 @@ add_custom_css()
 @st.cache_data
 def load_data():
 
-    # Normal CSVs
+    # Small CSVs stored directly in GitHub
     orders = pd.read_csv("data/orders.csv")
     order_items = pd.read_csv("data/order_items.csv")
     products = pd.read_csv("data/products.csv")
     refunds = pd.read_csv("data/order_item_refunds.csv")
 
-    # -----------------------------
-    # Helper: Load CSV inside a ZIP
-    # -----------------------------
-    def load_zip_csv(zip_path):
-        with zipfile.ZipFile(zip_path, "r") as z:
-            fname = z.namelist()[0]   # first file found inside zip
-            return pd.read_csv(z.open(fname))
+    # Large CSVs hosted on Hugging Face
+    sessions_url = "https://huggingface.co/datasets/Snap-mango01/toy-ecommerce-data/resolve/main/website_sessions_clean.csv"
+    pageviews_url = "https://huggingface.co/datasets/Snap-mango01/toy-ecommerce-data/resolve/main/website_pageviews.csv"
 
-    # ZIP files
-    website_sessions = load_zip_csv("data/website_sessions_clean.zip")
-    pageviews = load_zip_csv("data/website_pageviews.zip")
+    website_sessions = pd.read_csv(sessions_url)
+    pageviews = pd.read_csv(pageviews_url)
 
     return orders, order_items, products, refunds, website_sessions, pageviews
 
 
-# Load all data FIRST before using them
+# Load all data
 orders, order_items, products, refunds, website_sessions, pageviews = load_data()
 
 # ---------------------------------------------------------
@@ -118,7 +111,7 @@ if selected_device != "All":
     filtered_sessions = filtered_sessions[filtered_sessions["device_type"] == selected_device]
 
 # ---------------------------------------------------------
-# RADIO BUTTONS FOR NAVIGATION
+# NAVIGATION
 # ---------------------------------------------------------
 tab = st.radio(
     "Navigation",
@@ -146,7 +139,7 @@ if tab == "🏠 Home":
 # ---------------------------------------------------------
 # SALES DASHBOARD
 # ---------------------------------------------------------
-if tab == "📊 Sales Dashboard":
+elif tab == "📊 Sales Dashboard":
 
     st.title("📊 Sales Overview")
 
@@ -201,8 +194,6 @@ elif tab == "🧸 Product Performance":
     refunded_units = refunds_merged[refunds_merged["refund_amount_usd"] > 0].shape[0]
     refund_rate = refunded_units / total_units if total_units else 0
 
-    top_product = prod_data["product_name"].value_counts().idxmax()
-
     col1, col2 = st.columns(2)
     col1.metric("Total Units Sold", f"{total_units:,}")
     col2.metric("Refund Rate", f"{refund_rate*100:.2f}%")
@@ -240,4 +231,3 @@ elif tab == "💻 Website Analytics":
     col1, col2 = st.columns(2)
     col1.metric("Total Sessions", total_sessions)
     col2.metric("Total Pageviews", total_pageviews)
-
