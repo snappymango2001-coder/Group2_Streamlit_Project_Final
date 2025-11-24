@@ -6,5 +6,6 @@ matplotlib
 seaborn
 python-dateutil
 requests
-streamlit-authenticator
+streamlit-authenticator==0.2.3
+
 
