@@ -6,7 +6,7 @@ import yaml
 import streamlit_authenticator as stauth
 
 # ---------------------------------------------------------
-# AUTHENTICATION (New API)
+# AUTHENTICATION
 # ---------------------------------------------------------
 
 passwords = ["TomPass123", "MorganPass123", "CindyPass123"]
@@ -46,8 +46,30 @@ authenticator = stauth.Authenticate(
     config["cookie"]["expiry_days"]
 )
 
+# ---------------------------------------------------------
+# 🔵 INSERT LOGIN PAGE UI **RIGHT HERE**
+# ---------------------------------------------------------
+
+st.markdown("""
+<h2 style='text-align:center; color:#333;'>Welcome Back 👋</h2>
+
+<p style='text-align:center; color:#555; font-size:16px;'>
+    Use your company credentials to sign in  
+    and unlock your personalized analytics experience.
+</p>
+""", unsafe_allow_html=True)
+
+st.success("👋 Hi there! So good to see you again!")
+
+# ---------------------------------------------------------
+# LOGIN FORM
+# ---------------------------------------------------------
+
 name, auth_status, username = authenticator.login("Login", "main")
 
+# ---------------------------------------------------------
+# LOGIN RESPONSES
+# ---------------------------------------------------------
 
 if auth_status is False:
     st.error("❌ Incorrect username or password")
@@ -59,9 +81,13 @@ elif auth_status:
     authenticator.logout("Logout", "sidebar")
     st.sidebar.success(f"Logged in as {name}")
 
+    # 🎉 Balloons after successful login
+    st.balloons()
+
     # -----------------------------------------
     # EVERYTHING BELOW THIS POINT IS THE APP
     # -----------------------------------------
+
 
     st.set_page_config(
         page_title="Ecommerce Toys Dashboard",
@@ -786,6 +812,7 @@ elif auth_status:
     
         st.plotly_chart(fig_device, use_container_width=True)
     
+
 
 
 
