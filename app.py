@@ -2,7 +2,8 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-import streamlit_authenticator as stauth
+from streamlit_authenticator.authenticate import Authenticate
+from streamlit_authenticator.utilities.hasher import Hasher
 
 # ---------------------------------------------------------
 # AUTHENTICATION 
@@ -13,10 +14,9 @@ usernames = ["tom", "morgan", "cindy"]
 
 # Replace these placeholder passwords
 passwords = ["TomPass123", "MorganPass123", "CindyPass123"]
+hashed_passwords = Hasher(passwords).generate()
 
-hashed_passwords = stauth.Hasher(passwords).generate()
-
-authenticator = stauth.Authenticate(
+authenticator = Authenticate(
     names,
     usernames,
     hashed_passwords,
@@ -769,5 +769,6 @@ elif auth_status:
     
         st.plotly_chart(fig_device, use_container_width=True)
     
+
 
 
