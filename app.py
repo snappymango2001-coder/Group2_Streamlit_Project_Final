@@ -3,15 +3,14 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import yaml
-from streamlit_authenticator import Authenticate
-from streamlit_authenticator.utilities import Hasher
+import streamlit_authenticator as stauth
 
 # ---------------------------------------------------------
 # AUTHENTICATION (New API)
 # ---------------------------------------------------------
 
 passwords = ["TomPass123", "MorganPass123", "CindyPass123"]
-hashed_passwords = Hasher(passwords).generate()
+hashed_passwords = stauth.Hasher(passwords).generate()
 
 config = {
     "credentials": {
@@ -40,7 +39,7 @@ config = {
     }
 }
 
-authenticator = Authenticate(
+authenticator = stauth.Authenticate(
     config["credentials"],
     config["cookie"]["name"],
     config["cookie"]["key"],
@@ -61,8 +60,7 @@ elif auth_status:
     st.sidebar.success(f"Logged in as {name}")
 
     # -----------------------------------------
-    # EVERYTHING BELOW THIS POINT IS YOUR APP
-    # (starting with st.set_page_config)
+    # EVERYTHING BELOW THIS POINT IS THE APP
     # -----------------------------------------
 
     st.set_page_config(
@@ -788,6 +786,7 @@ elif auth_status:
     
         st.plotly_chart(fig_device, use_container_width=True)
     
+
 
 
 
