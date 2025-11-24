@@ -44,15 +44,15 @@ add_custom_css()
 @st.cache_data
 def load_data():
 
-    # Small CSVs stored directly in GitHub
+    # Small CSVs stored in GitHub
     orders = pd.read_csv("data/orders.csv")
     order_items = pd.read_csv("data/order_items.csv")
     products = pd.read_csv("data/products.csv")
     refunds = pd.read_csv("data/order_item_refunds.csv")
 
-    # Large CSVs hosted on Hugging Face
-    sessions_url = "https://huggingface.co/datasets/Snap-mango01/toy-ecommerce-data/resolve/main/website_sessions_clean.csv"
-    pageviews_url = "https://huggingface.co/datasets/Snap-mango01/toy-ecommerce-data/resolve/main/website_pageviews.csv"
+    # Large CSVs from Hugging Face (direct download)
+    sessions_url = "https://huggingface.co/datasets/Snap-mango01/toy-ecommerce-data/resolve/main/website_sessions_clean.csv?download=1"
+    pageviews_url = "https://huggingface.co/datasets/Snap-mango01/toy-ecommerce-data/resolve/main/website_pageviews.csv?download=1"
 
     website_sessions = pd.read_csv(sessions_url)
     pageviews = pd.read_csv(pageviews_url)
@@ -131,7 +131,10 @@ if tab == "🏠 Home":
     and website analytics using the navigation tabs above.
     """)
 
-    st.image("data/Onlypic.png", use_container_width=True)
+    try:
+        st.image("data/Onlypic.png", use_container_width=True)
+    except:
+        st.warning("Image file 'Onlypic.png' not found.")
 
     st.markdown("---")
     st.write("### 👈 Use the sidebar filters to explore the data.")
@@ -187,6 +190,9 @@ elif tab == "🧸 Product Performance":
     )
     prod_data = prod_data.merge(products, on="product_id", how="left")
 
+    # FIX: Prevent MergeError by renaming refund created_at
+    refunds = refunds.rename(columns={"created_at": "refund_created_at"})
+
     refunds_merged = prod_data.merge(refunds, on="order_item_id", how="left")
     refunds_merged["refund_amount_usd"] = refunds_merged["refund_amount_usd"].fillna(0)
 
@@ -205,15 +211,14 @@ elif tab == "📣 Marketing Insights":
 
     st.title("📣 Marketing Insights Dashboard")
 
-    unique_users = website_sessions["user_id"].nunique()
+    # FIX: user_id does NOT exist in your database → removed
     total_sessions = website_sessions["website_session_id"].nunique()
-    unique_purchasers = filtered_orders["user_id"].nunique()
-    customer_conv = unique_purchasers / unique_users if unique_users else 0
 
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Unique Users", unique_users)
-    col2.metric("Sessions", total_sessions)
-    col3.metric("Customer Conversion", f"{customer_conv*100:.2f}%")
+    col1, col2 = st.columns(2)
+    col1.metric("Total Sessions", total_sessions)
+    col2.metric("Conversion Placeholder", "N/A")
+
+    st.info("Note: No user_id column exists, so conversion rate cannot be calculated.")
 
 # ---------------------------------------------------------
 # WEBSITE ANALYTICS
