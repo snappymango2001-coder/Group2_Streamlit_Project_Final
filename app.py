@@ -11,7 +11,8 @@ from streamlit_authenticator.utilities import Hasher
 # ---------------------------------------------------------
 
 passwords = ["TomPass123", "MorganPass123", "CindyPass123"]
-hashed_passwords = Hasher(passwords).generate()
+hashed_passwords = Hasher.generate(passwords)
+
 
 config = {
     "credentials": {
@@ -788,6 +789,7 @@ elif auth_status:
     
         st.plotly_chart(fig_device, use_container_width=True)
     
+
 
 
 
